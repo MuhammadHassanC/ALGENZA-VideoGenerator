@@ -5,10 +5,15 @@ echo     ALGENZA VIDEO ENGINE - HIGH-PERFORMANCE VIDEO BUILDER
 echo     algenza.com  -  Lead Architect: Muhammad Hassan
 echo =================================================================
 
-set ASPECT=%1
-if "%ASPECT%"=="" set ASPECT=16:9
+set TARGET=%1
+if "%TARGET%"=="" set TARGET=16:9
 
-python cli.py build --aspect %ASPECT% --workers 4
+if "%TARGET%"=="titan" (
+    python cli.py titan --workers 4
+) else (
+    python cli.py build --aspect %TARGET% --workers 4
+)
+
 echo.
 echo Build finished! Check assets\ directory.
 pause

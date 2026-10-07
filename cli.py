@@ -109,6 +109,65 @@ def render_aspect(aspect="16:9", workers=4, cta="website"):
     print(f"SUCCESS! Rendered: {out_name} ({size_mb:.2f} MB, {elapsed:.1f}s)")
     return out_name
 
+def render_titan(workers=4):
+    print("\n=================================================================")
+    print("   [TITAN EDITION] RENDERING HIGH-INTENSITY TIKTOK 9:16 VIDEO")
+    print("   algenza.com  -  Lead Architect: Muhammad Hassan")
+    print("=================================================================")
+    out_name = "assets/algenza-titan-tiktok.mp4"
+    os.makedirs("assets", exist_ok=True)
+    
+    workers = max(1, min(workers, 8))
+    segment_files = []
+    procs = []
+    t_start = time.time()
+    
+    print(f"  Spawning {workers} parallel render workers for TITAN Mecha engine...")
+    for w in range(workers):
+        seg_file = f"seg_titan_{w}.mp4"
+        segment_files.append(seg_file)
+        p = subprocess.Popen([
+            sys.executable, "render_titan.py", "enc", str(w), str(workers), seg_file
+        ])
+        procs.append(p)
+        
+    for p in procs:
+        p.wait()
+        if p.returncode != 0:
+            raise RuntimeError(f"TITAN render process exited with error code {p.returncode}")
+            
+    list_path = "list_titan.txt"
+    with open(list_path, "w") as f:
+        for seg in segment_files:
+            f.write(f"file '{seg}'\n")
+            
+    print("  Muxing TITAN soundtrack and applying broadcast normalization...")
+    mux_cmd = [
+        FFMPEG_EXE, "-y", "-loglevel", "error",
+        "-f", "concat", "-safe", "0", "-i", list_path,
+        "-i", "mix_titan.wav",
+        "-map", "0:v", "-map", "1:a",
+        "-c:v", "copy",
+        "-af", "loudnorm=I=-16:TP=-1.5",
+        "-c:a", "aac", "-b:a", "192k", "-ar", "48000",
+        "-shortest", "-movflags", "+faststart",
+        out_name
+    ]
+    subprocess.run(mux_cmd, check=True)
+    
+    for seg in segment_files:
+        if os.path.exists(seg):
+            try: os.remove(seg)
+            except Exception: pass
+    if os.path.exists(list_path):
+        try: os.remove(list_path)
+        except Exception: pass
+        
+    elapsed = time.time() - t_start
+    size_mb = os.path.getsize(out_name) / (1024 * 1024) if os.path.exists(out_name) else 0
+    print(f"SUCCESS! Rendered TITAN Video: {out_name} ({size_mb:.2f} MB, {elapsed:.1f}s)")
+    return out_name
+
 def show_info():
     print_banner()
     print(f"\nNarrative Script Timeline ({NS} Scenes, Total: {END:.2f}s):\n")
@@ -122,6 +181,9 @@ def show_info():
     print("  - 16:9 Landscape (1920x1080): YouTube, Website, Client Presentations")
     print("  - 9:16 Vertical  (1080x1920): TikTok, Instagram Reels, YouTube Shorts")
     print("  - 1:1  Square    (1080x1080): Instagram Feed, LinkedIn, Twitter / X")
+    print("  - 4:5  Portrait  (1080x1350): Instagram Portrait Feed, Facebook Posts")
+    print("\nSpecial Editions:")
+    print("  - titan: High-intensity combat-grade TikTok 9:16 video with Mecha Sentinel")
 
 def main():
     parser = argparse.ArgumentParser(description="ALGENZA Video Engine CLI")
@@ -147,6 +209,12 @@ def main():
     p_build.add_argument("--skip-tts", action="store_true", help="Skip TTS regeneration")
     p_build.add_argument("--skip-mix", action="store_true", help="Skip audio mix regeneration")
     
+    # titan
+    p_titan = subparsers.add_parser("titan", help="Build high-intensity TITAN TikTok 9:16 video")
+    p_titan.add_argument("--workers", type=int, default=4, help="Number of parallel render workers")
+    p_titan.add_argument("--skip-tts", action="store_true", help="Skip TTS regeneration")
+    p_titan.add_argument("--skip-mix", action="store_true", help="Skip audio mix regeneration")
+    
     args = parser.parse_args()
     
     if args.command == "info" or not args.command:
@@ -165,6 +233,14 @@ def main():
         env = os.environ.copy()
         env["ASPECT"] = args.aspect
         subprocess.run([sys.executable, "render.py", "still", "3.0", "15.0", "25.0", "35.0", "65.0"], env=env)
+        return
+        
+    if args.command == "titan":
+        if not args.skip_tts or not os.path.exists("tts_titan.json"):
+            subprocess.run([sys.executable, "tts_titan.py"], check=True)
+        if not args.skip_mix or not os.path.exists("mix_titan.wav"):
+            subprocess.run([sys.executable, "mix_titan.py"], check=True)
+        render_titan(workers=args.workers)
         return
         
     if args.command == "build":

@@ -20,6 +20,7 @@ Built for multi-platform social media distribution, it renders native formats fo
 | **Vertical** | `9:16` | 1080×1920 | 60 fps | TikTok, Instagram Reels, YouTube Shorts | `assets/algenza-explainer-9x16.mp4` |
 | **Square** | `1:1` | 1080×1080 | 60 fps | Instagram Feed, LinkedIn, Twitter / X | `assets/algenza-explainer-1x1.mp4` |
 | **Portrait** | `4:5` | 1080×1350 | 60 fps | Instagram Feed (Tall), Facebook Feed | `assets/algenza-explainer-4x5.mp4` |
+| **TITAN Edition** | `9:16` | 1080×1920 | 60 fps | TikTok Viral (Mecha Sentinel Mascot) | `assets/algenza-titan-tiktok.mp4` |
 
 ---
 

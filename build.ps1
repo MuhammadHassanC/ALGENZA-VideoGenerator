@@ -7,7 +7,8 @@ Generates voiceover, procedural cyber-quant audio, frames, and final MP4 video.
 param (
     [string]$Aspect = "16:9",
     [int]$Workers = 4,
-    [switch]$All
+    [switch]$All,
+    [switch]$Titan
 )
 
 $ErrorActionPreference = "Stop"
@@ -26,21 +27,11 @@ if (-not $pythonCmd) {
 Write-Host "`n[1/4] Checking Python Dependencies..." -ForegroundColor Yellow
 python -m pip install -r requirements.txt --quiet
 
-# 3. Generate Voiceover
-Write-Host "`n[2/4] Generating Neural Voiceover (Edge-TTS / Kokoro)..." -ForegroundColor Yellow
-if (-not (Test-Path "v8.wav") -or -not (Test-Path "tts.json")) {
-    python tts.py
-} else {
-    Write-Host "Using existing voiceover audio." -ForegroundColor Green
-}
-
-# 4. Synthesize Audio & Lip-Sync Envelope
-Write-Host "`n[3/4] Synthesizing Cyber-Quant Soundtrack & Lip-Sync..." -ForegroundColor Yellow
-python mix.py
-
-# 5. Render Video Frames & Mux MP4
-Write-Host "`n[4/4] Rendering Video Frames & Assembling Final MP4..." -ForegroundColor Yellow
-if ($All) {
+# 3. Generate Video
+if ($Titan) {
+    Write-Host "`nBuilding TITAN Edition (High-Intensity TikTok 9:16 Mecha Edition)..." -ForegroundColor Yellow
+    python cli.py titan --workers $Workers
+} elseif ($All) {
     python cli.py build --aspect all --workers $Workers --skip-tts --skip-mix
 } else {
     python cli.py build --aspect $Aspect --workers $Workers --skip-tts --skip-mix

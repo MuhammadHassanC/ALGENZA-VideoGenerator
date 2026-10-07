@@ -11,12 +11,13 @@ venv/
 # Audio & Video Render Outputs (Generated Pipeline Artifacts)
 *.wav
 *.mp4
-!assets/*.mp4
-mouth.npy
-tts.json
+# !assets/*.mp4
+mouth*.npy
+tts*.json
 list*.txt
 seg*.mp4
 still_*.png
+titan_still_*.png
 test_*.png
 out.txt
 res.txt
