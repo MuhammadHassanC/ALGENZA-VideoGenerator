@@ -67,7 +67,7 @@ flowchart LR
 
 ### 2. Installation
 ```bash
-git clone https://github.com/Shifrozy/ALGENZA-VideoGenerator.git
+git clone https://github.com/MuhammadHassanC/ALGENZA-VideoGenerator.git
 cd ALGENZA-VideoGenerator
 pip install -r requirements.txt
 ```
@@ -175,7 +175,7 @@ Open **`http://localhost:8080`** in your browser.
 - **Lead Quantitative Systems Engineer & CEO**: **Muhammad Hassan**
 - **Direct WhatsApp**: [+92 319 7375850](https://wa.me/923197375850)
 - **Email**: [muhammadhassanchanna8@gmail.com](mailto:muhammadhassanchanna8@gmail.com)
-- **GitHub**: [@Shifrozy](https://github.com/Shifrozy)
+- **GitHub**: [@MuhammadHassanC](https://github.com/MuhammadHassanC)
 
 ---
 
